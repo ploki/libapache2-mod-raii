@@ -1,0 +1,207 @@
+== libapache2-mod-raii
+C++ application server module for apache2
+
+== Description
+This is a module for apache2 whiche enables compilation, loading and execution
+of C++ classes and HTML pages with c++ embeded. I work on this module for several
+ years and I use it in prod uction on several applications (both professionally
+and personally). It is stable and reactive. Web applications development is
+very pleasant and quite fast.
+
+Here is a list of features and characteristics.
+
+* seamlessly integrates the Apache's operation and configurations directives ;
+* applications you develop are composed of .C (your controller) and .csp (your
+  views) directly inside your web directories, heade files and/or libraries
+  (your model) can be found elsewhere ;
+* controllers  (.C) and views (.csp) are compiled and loaded on the fly when
+  the corresponding binary object is outdated. The server has not to be restarted
+  too often ;
+* Each source file contains a class that inherits from HttpServlet and only overloads
+  service(req,resp) (or doGet, doPost...) ;
+* raiipp preprocessor takes care of converting .csp files containing mainly html
+  code into a class that inherits from HttpServlet ;
+* syntax used by the preprocessor is similar to JSP - you can also use personalized tags ;
+* Untrapped exceptions are displayed in the web page with the stack unwinded to
+  display functions names, source files and line numbers for easy debugging. Besides
+  the com the compilation errors are alos exceptions and are displayed with pretty colors ;
+* signals "Illegal Instruction", "Floating Point Exception", "Segmentation Violation",
+  "Bus Error" et "Abort" are intercepted weither they come from a request or not, and are
+  detailed and processed like exceptions which are displayed. This prevents the server to
+  die (there are limits anyway...) ;
+* connection to a lot of database via sqlrelay ;
+* or to PostgreSQL natively with internalt connection pool ;
+* or to SQLite with the same mechanism ;
+* or the database you love, two classes are to be overloaded (15 trival methods in total)
+  to implement a database driver
+* some of the STL classes are overloaded (crappy but effective) so you can embed them in sessions
+ 
+
+== But why ?
+
+Because I found j2ee concept very interesting, because the Java running environment is not
+within reach of a Cobalt Qube with only 64 MB of memory  (also try to run a php page on a
+Cobalt Qube... and I'm not talking about RoR).
+
+== But how ?
+
+Api is similar to that provided by javax.servlet.http. But unlike Java, C++ does not have a
+garbage collector, you should see this as an advantage because the use of smart pointers with
+reference counting can safely manage memory allocation (see the Raii idiom).
+
+== Prerequisites
+
+A debian (tested on mips (el), powerpc, i686 and amd64), with packages g++, libapache2-mod-apreq2,
+libapreq2, libapreq2-dev, apache2-mpm-worker (or apache2-mpm-event), apache2-threaded-dev, libapr1,
+libapr1-dev, libvmime0, and libvmime-dev. For database connectors  libsqlite0, libsqlite0-dev,
+sqlite, libpq5 et libpq-dev.
+
+{{{
+cobalt:~# apt-get install g++ libapache2-mod-apreq2 libapreq2 libapreq2-dev \
+                   apache2-mpm-worker apache2-threaded-dev \
+                   sqlrelay-dev libapr1 libapr1-dev libvmime0 libvmime-dev \
+                   libsqlite0 libsqlite0-dev sqlite libpq5 libpq-dev bison flex
+}}}
+
+== Screenshot
+Actualy not a screenshot but pieces of programs
+
+a controler ( /ctrl.C ) :
+{{{
+#include <raii.H>
+
+using namespace raii;
+using namespace raii::sql;
+
+class SERVLET(index) : public HttpServlet {
+
+
+ void service( HttpServletRequest& request, HttpServletResponse& response) {
+
+     String action=request.getParameter("action");
+
+     if ( action.empty() || action == "index" ) {
+       request.setAttribute("my_attr",
+                new String( String("hello ")
+                            + request.getParameter("name") + "!" ) );
+       request.getRequestDispatcher("/view/index.csp").forward(request,response);
+     }
+     else if ( action == "plop" ) {
+       //do something
+     }
+     else {
+        throw ServletException("Unknown action");
+     }
+ }
+};
+
+exportServlet(index);
+}}}
+
+a view  ( /view/index.csp ) :
+
+{{{
+<%
+ptr my_attr=request.getAttribute("my_attr");
+if ( ! my_attr )
+    throw ServletException("plop");
+%>
+bonjour <%= *my_attr %><br/>
+hello <%= request.getRemoteAddr() %> !
+ 
+<table>
+  <tbody>
+    <tr>
+      <th>header</th><th>value</th>
+    </tr>
+    <%
+    Vector<String> headers=request.getHeaderNames();
+    for ( Vector<String>::const_iterator it=headers.begin();
+          it != headers.end();
+          ++it) {
+    %> 
+      <tr>
+        <td><%= *it %></td>
+        <td><%= request.getHeader(*it) %></td>
+      </tr>
+   <% } %>
+  </tbody>
+</table>
+
+ with a customized tag
+
+<%:table<Vector<String> > in=request.getHeaders(); th="header"; th="value"; cond=self.begin()%>
+   <tr>
+     <td><%= *self.elem %></td>
+     <td><%= request.getHeader(*self.elem) %></td>
+   </tr>
+<%/table<Vector<String> > self.next() %>
+<%
+ response << "PLOP!";
+%>
+}}}
+
+== Installation from sources
+
+{{{
+$ tar xvfz libapache2-mod-raii-XXX.tgz
+$ cd libapache2-mod-raii-XXX
+$ SU0=su0 make install
+}}}
+
+If you do not have su0 :
+
+{{{
+$ make
+$ su -c "make install"
+}}}
+
+== debian packages
+
+{{{
+$ tar xvfz  libapache2-mod-raii-XXX.tgz
+$ cd libapache2-mod-raii-XXX
+$ fakeroot debian/rules binary
+}}}
+
+Then you need to tell apache that there is a new module to load (without forgetting to turn on apreq)
+
+{{{
+# cat > /etc/apache2/mods-available/raii.load
+LoadModule raii_module /usr/lib/apache2/modules/mod_raii.so
+SegfaultHandler on
+^D
+# a2enmod apreq
+# a2enmod raii
+Installing debian packages
+# dpkg -i libapache2-mod-raii*XXX*ARCH.deb
+# a2enmod apreq
+# a2enmod raii
+}}}
+
+== Configuration
+Because the operation of this module, you must use mpm-worker or mpm-event version of apache and run
+a single server process. However, there is no limitation on the number of threads (take care of the
+memory used by each thread's stack). This give the file /etc/apache2/apache2.conf
+
+{{{
+ StartServers         1
+ ServerLimit          1
+ ThreadLimit          25
+ MaxClients           25
+ ThreadsPerChild      25
+ MinSpareThreads      5
+ MaxSpareThreads      15
+ MaxRequestsPerChild   0
+}}}
+
+and finally restart apache :
+{{{
+# apache2ctl restart
+}}}
+
+== And then ?
+You can install Not So Original, a photo gallery that processe your raw files, TinyCMS or loudspeaker.
+
+== Help !
+In case of problems, please drop a mail to me. " guillaume AT blackmilk o fr".
