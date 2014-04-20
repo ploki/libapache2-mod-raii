@@ -1,0 +1,24 @@
+== REQUIRES ==
+
+libapr0
+libapr0-dev
+libapreq2
+libapreq2-dev
+libapache2-mod-apreq2
+apache2-threaded-dev
+apache2-mpm-perchild
+apache2-utils
+libvmime0
+libvmime-dev
+
+libsqlite0
+libsqlite0-dev
+sqlite
+
+libsqlrelay-0.37
+sqlrelay-dev
+#sqlrelay-postgresql
+#sqlrelay-sqlite
+#sqlrelay
+#sqlrelay-doc
+

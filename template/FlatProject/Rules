@@ -1,0 +1,31 @@
+OFILES:=$(CFILES:.C=.o)
+
+
+%.o: %.C
+	@echo `RaiiBuild` `RaiiBuild --cplusplusflags` -c $< -o $@
+	@`RaiiBuild` `RaiiBuild --cplusplusflags` -c $< -o $@
+
+ifndef PROJECT
+all install clean:
+	@echo Define PROJECT variable
+	@false
+else
+
+
+TARGET=lib$(PROJECT)_$(MODULE).so
+
+all: $(TARGET)
+
+$(TARGET): $(OFILES)
+	@echo `RaiiBuild` `RaiiBuild --linkflags` $(OFILES) -o $@
+	@`RaiiBuild` `RaiiBuild --linkflags` $(OFILES) -o $@
+
+
+clean:
+	rm -f *~ $(OFILES) $(TARGET)
+
+install: all
+	$(SU0) install $(TARGET) $(DESTDIR)/usr/lib/
+
+endif
+

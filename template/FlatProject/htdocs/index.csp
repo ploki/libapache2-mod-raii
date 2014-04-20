@@ -1,0 +1,3 @@
+<%
+response.sendRedirect(response.encodeRedirectURL(request.getContextPath()+"/index.C"));
+%>

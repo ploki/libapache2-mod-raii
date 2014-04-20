@@ -1,0 +1,26 @@
+libapache2-mod-raii for Debian
+------------------------------
+
+You need to enable apreq and raii in your apache configuration
+
+# a2enmod apreq
+# a2enmod raii
+
+and you must setup correctly your mpm_worker_module like this
+
+<IfModule mpm_worker_module>
+    StartServers         1
+    ServerLimit          1
+    ThreadLimit          42
+    MaxClients           42
+    ThreadsPerChild      42
+    MinSpareThreads      5
+    MaxSpareThreads      15
+    MaxRequestsPerChild   0
+</IfModule>
+
+and then
+
+# apache2ctl restart
+
+ -- Guillaume Gimenez <ggimenez@blackmilk.fr>  Tue, 27 Feb 2007 11:42:36 +0100

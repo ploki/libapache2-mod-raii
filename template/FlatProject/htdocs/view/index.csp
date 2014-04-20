@@ -1,0 +1,8 @@
+<html>
+  <head>
+    <title>index.C default view</title>
+  </head>
+  <body>
+      hello <%= request.getRemoteAddr() %> !
+  </body>
+</html>

@@ -1,0 +1,2 @@
+LoadModule raii_module /usr/lib/apache2/modules/mod_raii.so
+SegfaultHandler on

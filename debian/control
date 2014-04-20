@@ -1,0 +1,40 @@
+Source: libapache2-mod-raii
+Section: web
+Priority: extra
+Maintainer: Guillaume Gimenez <ggimenez@blackmilk.fr.fr>
+Build-Depends: debhelper (>= 5), g++, libapreq2-dev, apache2-dev, sqlrelay-dev, libapr1-dev, libvmime-dev, libsqlite0-dev
+Standards-Version: 3.7.2
+
+Package: libapache2-mod-raii
+Architecture: any
+Depends: g++, libapache2-mod-apreq2, libapreq2-3, libapreq2-dev, apache2-mpm-worker, apache2-threaded-dev, libapr1, libapr1-dev, libvmime0, libvmime-dev
+Description: C++ Applications Server
+ a C++ applications server module for apache2
+
+Package: libapache2-mod-raii-sqlrelay
+Architecture: any
+Depends: libsqlrelay-0.39
+Description: C++ Application Server Connector for sqlrelay
+ a C++ applications server module for apache2
+ sqlrelay connector
+
+Package: libapache2-mod-raii-sqlite
+Architecture: any
+Depends: libsqlite0, sqlite
+Description: C++ Application Server Connector for sqlite
+ a C++ applications server module for apache2
+ sqlite connector
+
+Package: libapache2-mod-raii-pgsql
+Architecture: any
+Depends: libpq5
+Description: C++ Application Server Connector for postgresql
+ a C++ applications server module for apache2
+ postgresql connector
+
+Package: libapache2-mod-raii-cairo
+Architecture: any
+Depends: libcairo2, libpango1.0-0
+Description: C++ Application Server Binding to Cairo
+ a C++ application server module for apache2
+ Cairo binding

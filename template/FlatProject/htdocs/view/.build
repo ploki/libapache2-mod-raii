@@ -1,0 +1,4 @@
+-Wall -Werror
+-I/srv/src
+-Wl,-rpath,/srv/src/FlatProject -L/srv/src/FlatProject
+-lFlatProject_global

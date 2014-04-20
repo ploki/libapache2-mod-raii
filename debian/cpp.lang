@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+ Authors: Marco Barisione, Emanuele Aina
+ Copyright (C) 2005-2007 Marco Barisione <barisione@gmail.com>
+ Copyright (C) 2005-2007 Emanuele Aina
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+
+ You should have received a copy of the GNU Library General Public
+ License along with this library; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+-->
+<language id="cpp" _name="C++" version="2.0" _section="Sources">
+    <metadata>
+      <property name="mimetypes">text/x-c++;text/x-cpp;text/x-c++src</property>
+      <property name="globs">*.cpp;*.cxx;*.cc;*.C;*.c++;*.H;*.h</property>
+      <property name="line-comment-start">//</property>
+      <property name="block-comment-start">/*</property>
+      <property name="block-comment-end">*/</property>
+    </metadata>
+
+    <styles>
+    <style id="comment" _name="Comment" map-to="def:comment"/>
+    <style id="error" _name="Error" map-to="def:error"/>
+        <style id="variable" _name="Variable" map-to="def:identifier"/>
+        <style id="operator" _name="Operator" map-to="def:operator"/>
+        <style id="keyword" _name="Keyword" map-to="c:keyword"/>
+        <style id="type" _name="Data Type" map-to="c:type"/>
+        <style id="common-defines" _name="Common Defines" map-to="c:common-defines"/>
+    </styles>
+
+    <definitions>
+        <!-- C++-specific stuff (i.e. stuff which is not C) -->
+        <context id="cpp-proper">
+            <include>
+                <context id="keywords" style-ref="keyword">
+                    <keyword>and</keyword>
+                    <keyword>and_eq</keyword>
+                    <keyword>bitand</keyword>
+                    <keyword>bitor</keyword>
+                    <keyword>catch</keyword>
+                    <keyword>compl</keyword>
+                    <keyword>const_cast</keyword>
+                    <keyword>delete</keyword>
+                    <keyword>dynamic_cast</keyword>
+                    <keyword>false</keyword>
+                    <keyword>friend</keyword>
+                    <keyword>new</keyword>
+                    <keyword>not</keyword>
+                    <keyword>not_eq</keyword>
+                    <keyword>operator</keyword>
+                    <keyword>or</keyword>
+                    <keyword>or_eq</keyword>
+                    <keyword>private</keyword>
+                    <keyword>protected</keyword>
+                    <keyword>public</keyword>
+                    <keyword>reinterpret_cast</keyword>
+                    <keyword>static_cast</keyword>
+                    <keyword>this</keyword>
+                    <keyword>throw</keyword>
+                    <keyword>true</keyword>
+                    <keyword>try</keyword>
+                    <keyword>typeid</keyword>
+                    <keyword>using</keyword>
+                    <keyword>xor</keyword>
+                    <keyword>xor_eq</keyword>
+
+                    <keyword>class</keyword>
+                    <keyword>namespace</keyword>
+                    <keyword>typename</keyword>
+                    <keyword>template</keyword>
+                    <keyword>virtual</keyword>
+
+                    <keyword>__thread</keyword>
+                </context>
+
+    <context id="cpp-line-comment" style-ref="comment" end-at-line-end="true" extend-parent="false">
+      <start>//</start>
+      <include>
+        <context ref="def:in-line-comment"/>
+      </include>
+    </context>
+
+    <context id="c-block-comment" style-ref="comment">
+      <start>/\*</start>
+      <end>\*/</end>
+      <include>
+        <context ref="def:in-line-comment"/>
+      </include>
+    </context>
+
+    <context id="close-comment-outside-comment" style-ref="error">
+      <match>\*/(?!\*)</match>
+    </context>
+
+    <context id="operators" style-ref="operator" extend-parent="false">
+      <match>[-.~^@,;:/%|\=\+\*\!\?&amp;&lt;&gt;()\[\]{}]</match>
+    </context>
+
+
+                <context id="types" style-ref="type">
+                    <keyword>bool</keyword>
+                    <keyword>explicit</keyword>
+                    <keyword>export</keyword>
+                    <keyword>inline</keyword>
+                    <keyword>mutable</keyword>
+                    <keyword>wchar_t</keyword>
+
+                    <keyword>iterator</keyword>
+                    <keyword>const_iterator</keyword>
+                    <keyword>shared_ptr</keyword>
+                    <keyword>auto_ptr</keyword>
+                    <keyword>ptr</keyword>
+                    <keyword>DAO</keyword>
+                </context>
+
+                <context id="variables" style-ref="variable">
+                    <keyword>request</keyword>
+                    <keyword>response</keyword>
+                    <keyword>session</keyword>
+                    <keyword>action</keyword>
+                </context>
+
+                <context id="common-defines" style-ref="common-defines">
+                    <keyword>__STDC__</keyword>
+                    <keyword>__cplusplus</keyword>
+                    <keyword>exportServlet</keyword>
+                </context>
+            </include>
+        </context>
+
+        <context id="highlight">
+                <include>
+                        <!--
+                        <context id="uvariables" style-ref="variable">
+                                <match>\%[[_a-z][a-zA-Z_0-9]*\%]</match>
+                        </context>
+                        -->
+			<context id="otherdefines" style-ref="common-defines">
+                                <match>\%[[A-Z_][A-Z_0-9]*\%]</match>
+			</context>
+                        <context id="utypes" style-ref="type">
+                                <match>\%[[A-Z][a-zA-Z_0-9]*|[a-zA-Z_0-9]*_[ts]\%]</match>
+                        </context>
+                </include>
+        </context>
+        
+        <!-- actual language definition: C++-specific stuff plus everything from C -->
+        <context id="cpp">
+            <include>
+                <context ref="cpp-line-comment"/>
+                <context ref="c-block-comment"/>
+                <context ref="close-comment-outside-comment"/>
+                <context ref="operators"/>
+                <context ref="cpp-proper"/>
+                <context ref="c:c"/>
+                <context ref="highlight"/>
+            </include>
+        </context>
+    </definitions>
+</language>
