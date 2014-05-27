@@ -97,7 +97,7 @@ class ResultSetImplSQLITE : public ResultSetImpl {
                                 return ret;
                         }
                         if ( *tail != '\0' ) {
-                                ret = sqlite_finalize(vm,&zerrmsg);
+                                (void) sqlite_finalize(vm,&zerrmsg);
                                 if ( zerrmsg ) { free( zerrmsg ); }
                                 throw SQLiteException((String("Multiple statements in query: tail is [")+tail+"]").c_str());
                         }

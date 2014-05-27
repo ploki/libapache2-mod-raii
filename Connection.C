@@ -300,7 +300,7 @@ namespace sql {
 
 	ResultSet Connection::query(const String& query) {
 
-                timeval start;
+                timeval start = {0,};
 		if ( probe )
 		        start=probe->startTimer(query);
 

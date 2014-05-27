@@ -378,6 +378,7 @@ namespace error {
 			if ( prettyPrint )
 				st+="<br>";
       
+			free(dbg);
       
 			if ( end ) break;
     	}
