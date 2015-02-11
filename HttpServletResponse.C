@@ -296,7 +296,9 @@ void HttpServletResponse::setStatus( int sc )
       characterEncoding=charset;
       applyCT();
     }
-    void HttpServletResponse::setContentLength(int len) { throw NotImplementedException("à coder"); }
+    void HttpServletResponse::setContentLength(int len) {
+      setHeader("Content-Length", len);
+    }
     void HttpServletResponse::setContentType(const String& type)
     {
       contentType=type;
