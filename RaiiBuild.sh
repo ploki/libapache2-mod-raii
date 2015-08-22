@@ -53,7 +53,9 @@ SOFILE="${DSODIR}/${RAIIFILE}.${TLS_SUFFIX}.${ARCH}.so.${DATE}"
 
 BUILDOPT="$(dirname $RAIIFILE)/.build"
 if [ -r "$BUILDOPT" ] ; then
-  CPLUSPLUSFLAGS="$(cat "$BUILDOPT") $CPLUSPLUSFLAGS"
+    BUILD_ADDITION="$(cat "$BUILDOPT")"
+    BUILD_ADDITION="$(eval "echo  \"$BUILD_ADDITION\"")"
+    CPLUSPLUSFLAGS="$BUILD_ADDITION $CPLUSPLUSFLAGS"
 fi
 
 mkdir -p "$(dirname "$CFILE")" "$(dirname "$SOFILE" )"
